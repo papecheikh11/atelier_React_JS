@@ -3,7 +3,8 @@ class Todo extends React.Component {
         super(props)
         this.state = {
             userInput: '',
-            tache: []
+            tache: [],
+            editingId: null
         }
         // this.onChange = this.onChange.bind(this)
         this.addTodo = this.addTodo.bind(this)
@@ -46,11 +47,11 @@ class Todo extends React.Component {
     }
 
     //fonction qui permet d'editer une tache ajouté
-    editTodo(tacheAModifierOuSupprimer) {
-        const tableau = this.state.tache;
-        const index = tableau.indexOf(tacheAModifierOuSupprimer);
-        console.log(tableau);
+    editTodo(e, tacheAModifierOuSupprimer) {
+        
     }
+
+    
 
     //affichage au niveau du render de la liste de tableau ajouté
     renderTodo() {
@@ -58,8 +59,8 @@ class Todo extends React.Component {
             return(
                 <div 
                 key={tacheAModifierOuSupprimer.id} 
-                className="container list-group-item ">
-                    <div className="d-flex">
+                className="container list-group-item border-0 mx-auto w-50 ">
+                    <div className="container d-flex">
                         <div className='col-10'>
                         {tacheAModifierOuSupprimer.valeur}
                         </div>
