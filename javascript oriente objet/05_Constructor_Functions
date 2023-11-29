@@ -1,0 +1,25 @@
+// C'est une maquette ou modéle pour la creation des objects
+
+function Utilisateur(noms, email, ...amis){
+    this.noms = noms
+    this.email= email
+    this.amis = amis
+    this.login = function () {
+        console.log(`${email} est connecté(e)`);
+    }
+    this.logout = function () {
+        console.log(`${email} est déconnecté(e)`);
+    }
+}
+
+const utili = new Utilisateur('Pape Cheikh', 'cheikh@gmail.com', 'Ami', 'Modou')
+const utili2 = new Utilisateur('Amadou Sene', 'amadou@gmail.com', 'Seynabou', 'Martial')
+const utili3 = new Utilisateur('Ousmane Ndiaye', 'ousmane@gmail.com', 'Ami')
+
+console.log(utili);
+console.log(utili2);
+console.log(utili3);
+
+//Accés aux methodes
+utili.login()
+utili.logout()

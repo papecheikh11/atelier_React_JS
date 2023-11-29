@@ -4,9 +4,7 @@ class Todo extends React.Component {
         this.state = {
             userInput: '',
             tache: [],
-            editingId: null
         }
-        // this.onChange = this.onChange.bind(this)
         this.addTodo = this.addTodo.bind(this)
         this.deleteTodo = this.deleteTodo.bind(this)
         this.editTodo = this.editTodo.bind(this)
@@ -15,20 +13,27 @@ class Todo extends React.Component {
 // fonction pour ajouter une tache dans le DOM
     addTodo(e) {
         e.preventDefault();
-        const id = Math.floor(Math.random() * 24500000);
-        const nomTache = this.state.userInput;
+        if (this.state.userInput.trim() !== '') {
+            
+            const id = Math.floor(Math.random() * 24500000);
+            const nomTache = this.state.userInput;
+    
+            // Copiez le tableau existant dans le state
+            const nouveauTableau = [...this.state.tache];
+    
+            // Ajoutez le nouvel objet avec id et nomTache au tableau copié
+            nouveauTableau.push({ id: id, valeur: nomTache });
+    
+            // Mettez à jour le state avec le nouveau tableau
+            this.setState({
+                userInput: '',
+                tache: nouveauTableau
+            });
+        }
+        else{
+            alert('Remplissez la tache')
+        }
 
-        // Copiez le tableau existant dans le state
-        const nouveauTableau = [...this.state.tache];
-
-        // Ajoutez le nouvel objet avec id et nomTache au tableau copié
-        nouveauTableau.push({ id: id, valeur: nomTache });
-
-        // Mettez à jour le state avec le nouveau tableau
-        this.setState({
-            userInput: '',
-            tache: nouveauTableau
-        });
     }
 
     //fonction qui permet de supprimer une tache ajouté
