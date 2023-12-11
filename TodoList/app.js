@@ -5,9 +5,10 @@ class App extends React.Component {
 
     this.ajoutTache = this.ajoutTache.bind(this);
     this.deleteTache = this.deleteTache.bind(this);
+    this.editTache = this.editTache.bind(this);
     // this.handleChange = this.ajoutTache.bind(this);
   }
-  ajoutTache = (e) => {
+  ajoutTache(e) {
     e.preventDefault();
     if (this.state.tacheInput.trim() !== "") {
       const id = Math.floor(Math.random() * 24500000);
@@ -26,12 +27,11 @@ class App extends React.Component {
     } else {
       alert("Remplissez la tache");
     }
-  };
+  }
 
   deleteTache(tacheModSup) {
     const tableau = this.state.tache;
     const index = tableau.indexOf(tacheModSup);
-
     if (index !== -1) {
       tableau.splice(index, 1);
       this.setState({
@@ -40,6 +40,10 @@ class App extends React.Component {
     } else {
       console.error("L'élément n'a pas été trouvé dans le tableau.");
     }
+  }
+
+  editTache(tacheModSup, newValue) {
+    console.log(this.state.tacheInput);
   }
 
   handleChange = (e) => {
@@ -56,11 +60,12 @@ class App extends React.Component {
           tacheInput={this.state.tacheInput}
         />
         <ul>
-          <Li
+          <Liste
             ajoutTache={this.ajoutTache}
             handleChange={this.handleChange}
             tacheInput={this.state.tacheInput}
             deleteTache={this.deleteTache}
+            editTache={this.editTache}
             tache={this.state.tache}
           />
         </ul>
@@ -72,9 +77,12 @@ class App extends React.Component {
 class Form extends React.Component {
   render() {
     return (
-      <div>
+      <div className="mb-5">
         <h1 className="text-center my-5">Ma TodoList</h1>
-        <form className="container w-50" onSubmit={this.props.ajoutTache}>
+        <form
+          className="container w-50 d-flex"
+          onSubmit={this.props.ajoutTache}
+        >
           <input
             type="text"
             value={this.props.tacheInput}
@@ -82,41 +90,42 @@ class Form extends React.Component {
             className="form-control"
             placeholder="Ajouter une tache"
           />
-          <div className="d-flex justify-content-center">
-            <button type="submit" className="btn btn-primary  my-2 ">
-              Ajouter
-            </button>
-          </div>
+
+          <button type="submit" className="btn btn-primary ">
+            <i className="fa-solid fa-plus"></i>
+          </button>
         </form>
       </div>
     );
   }
 }
 
-class Li extends React.Component {
+class Liste extends React.Component {
   render() {
     return this.props.tache.map((tacheModSup) => {
       return (
-        <div
+        <li
           key={tacheModSup.id}
-          className="container list-group-item border-0 mx-auto w-50 my-3 "
+          className="container list-group-item border-0 mx-auto w-50 my-1"
         >
           <div className="container d-flex">
-            <div className="col-10">{tacheModSup.valeur}</div>
-            <button
-              onClick={() => this.editTodo(tacheAModifierOuSupprimer)}
-              className="btn btn-warning mx-1"
-            >
-              <i className="fa-regular fa-pen-to-square"></i>
-            </button>
-            <button
-              onClick={() => this.props.deleteTache(tacheModSup)}
-              className="btn btn-danger mx-1"
-            >
-              <i className="fa-solid fa-trash"></i>
-            </button>
+            <div className="col-lg-10 col-md-9 ">{tacheModSup.valeur}</div>
+            <div className="col-lg-2 col-md-3">
+              <button
+                onClick={() => this.props.editTache(tacheModSup)}
+                className="btn btn-warning mx-1"
+              >
+                <i className="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button
+                onClick={() => this.props.deleteTache(tacheModSup)}
+                className="btn btn-danger mx-1"
+              >
+                <i className="fa-solid fa-trash"></i>
+              </button>
+            </div>
           </div>
-        </div>
+        </li>
       );
     });
   }
