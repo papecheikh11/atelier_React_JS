@@ -12,6 +12,19 @@ class JemmaCode extends React.Component {
     this.deleteUser = this.deleteUser.bind(this);
     this.editUser = this.editUser.bind(this);
   }
+
+  componentDidMount() {
+    const savedUserList = JSON.parse(localStorage.getItem("userList"));
+    if (savedUserList) {
+      this.setState({ userList: savedUserList });
+    }
+  }
+  componentDidUpdate(prevState) {
+    if (prevState.userList !== this.state.userList) {
+      localStorage.setItem("userList", JSON.stringify(this.state.userList));
+    }
+  }
+
   deleteUser(utilsateur) {
     const newListeUser = this.state.userList.filter(
       (user) => user.id !== utilsateur
@@ -19,10 +32,11 @@ class JemmaCode extends React.Component {
     this.setState({ userList: newListeUser });
   }
 
-editUser(utilisateur){
-    const tabUser = this.state.userList
-    console.log(tabUser);
-}
+  editUser(userId) {
+    this.setState((prevState) => ({ userList: prevState.userList.map((user) =>user.id === userId ? { ...user, modification: !user.modification }: user
+      ),
+    }));
+  }
 
   ajoutPersonne(e) {
     e.preventDefault();
@@ -39,7 +53,7 @@ editUser(utilisateur){
         nom: this.state.nom,
         email: this.state.email,
         telephone: this.state.tel,
-        modification:false
+        modification: false,
       };
       this.setState((prev) => ({ userList: [...prev.userList, newPerson] }));
       this.setState({ prenom: "" });
@@ -49,7 +63,12 @@ editUser(utilisateur){
     } else {
       alert("Veillez remplir les champs");
     }
+
+    let updateArr = this.state.userList;
+    localStorage.setItem("todolist", JSON.stringify(updateArr));
+    console.log(updateArr);
   }
+
   handleChangePrenom = (e) => {
     this.setState({ prenom: e.target.value });
   };
@@ -169,7 +188,7 @@ class Table extends React.Component {
             <Tbody
               userList={this.props.userList}
               deleteUser={this.props.deleteUser}
-              editUser = {this.props.editUser}
+              editUser={this.props.editUser}
             />
           </tbody>
         </table>
@@ -182,16 +201,38 @@ class Tbody extends React.Component {
   render() {
     return this.props.userList.map((user) => (
       <tr key={user.id}>
-        <td>{user.prenom}</td>
-        <td>{user.nom}</td>
-        <td>{user.email}</td>
-        <td>{user.telephone}</td>
+        <td>{user.modification ? (<input type="text" defaultValue={user.prenom} onChange={this.props.handleChangePrenom}/>) : (user.prenom)}</td>
+        <td>
+          {user.modification ? (
+            <input type="text" defaultValue={user.nom} onChange={this.props.handleChangeNom}/>
+          ) : (
+            user.nom
+          )}
+        </td>
+        <td>
+          {user.modification ? (
+            <input type="email" defaultValue={user.email} onChange={this.props.handleChangeEmail}/>
+          ) : (
+            user.email
+          )}
+        </td>
+        <td>
+          {user.modification ? (
+            <input type="text" defaultValue={user.telephone} onChange={this.props.handleChangeTelephone}/>
+          ) : (
+            user.telephone
+          )}
+        </td>
         <td>
           <button
             onClick={() => this.props.editUser(user.id)}
             className="btn btn-warning mx-1"
           >
-            <i className="fa-regular fa-pen-to-square"></i>
+            {user.modification ? (
+              <i className="fa-solid fa-check"></i>
+            ) : (
+              <i className="fa-solid fa-pen-to-square"></i>
+            )}
           </button>
           <button
             onClick={() => this.props.deleteUser(user.id)}
@@ -204,5 +245,15 @@ class Tbody extends React.Component {
     ));
   }
 }
+
+class Input extends React.Component{
+  render(){
+    return(
+      <input type="text" className="form-control"/>
+    )
+  }
+}
+
+
 
 ReactDOM.render(<JemmaCode />, document.getElementById("root"));
