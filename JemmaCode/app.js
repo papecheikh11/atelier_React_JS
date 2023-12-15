@@ -7,10 +7,12 @@ class JemmaCode extends React.Component {
       email: "",
       tel: "",
       userList: [],
+      modification: false,
     };
     this.ajoutPersonne = this.ajoutPersonne.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.editUser = this.editUser.bind(this);
+    this.enEdition = this.enEdition.bind(this);
   }
 
   componentDidMount() {
@@ -33,9 +35,35 @@ class JemmaCode extends React.Component {
   }
 
   editUser(userId) {
-    this.setState((prevState) => ({ userList: prevState.userList.map((user) =>user.id === userId ? { ...user, modification: !user.modification }: user
-      ),
-    }));
+    const newUser = this.state.userList.find((user) => user.id === userId);
+
+    this.setState({
+      prenom: newUser.prenom,
+      nom: newUser.nom,
+      email: newUser.email,
+      tel: newUser.tel,
+      modification: newUser.id,
+    });
+
+    console.log(newUser);
+  }
+
+  enEdition(e){
+    e.preventDefault()
+    if (this.state.modification !== false) {
+    const enEdition = this.state.userList.map((user)=> user.id === this.state.modification ? {id:user.id, nom:this.state.nom, prenom:this.state.prenom, tel:this.state.tel, email:this.state.email} : user)
+    this.setState({
+      userList:enEdition,
+      prenom:'',
+      nom:'',
+      email:'',
+      tel:'',
+      modification:false
+    })
+      
+    } else {
+      
+    }
   }
 
   ajoutPersonne(e) {
@@ -52,8 +80,7 @@ class JemmaCode extends React.Component {
         prenom: this.state.prenom,
         nom: this.state.nom,
         email: this.state.email,
-        telephone: this.state.tel,
-        modification: false,
+        tel: this.state.tel,
       };
       this.setState((prev) => ({ userList: [...prev.userList, newPerson] }));
       this.setState({ prenom: "" });
@@ -65,7 +92,7 @@ class JemmaCode extends React.Component {
     }
 
     let updateArr = this.state.userList;
-    localStorage.setItem("todolist", JSON.stringify(updateArr));
+    localStorage.setItem("userList", JSON.stringify(updateArr));
     console.log(updateArr);
   }
 
@@ -90,6 +117,7 @@ class JemmaCode extends React.Component {
           ajoutPersonne={this.ajoutPersonne}
           deleteUser={this.deleteUser}
           editUser={this.editUser}
+          enEdition={this.enEdition}
           handleChangePrenom={this.handleChangePrenom}
           handleChangeNom={this.handleChangeNom}
           handleChangeEmail={this.handleChangeEmail}
@@ -98,11 +126,19 @@ class JemmaCode extends React.Component {
           nom={this.state.nom}
           email={this.state.email}
           tel={this.state.tel}
+          modification={this.state.modification}
+        
         />
         <Table
+          modification={this.state.modification}
           userList={this.state.userList}
           deleteUser={this.deleteUser}
           editUser={this.editUser}
+          enEdition={this.enEdition}
+          handleChangePrenom={this.handleChangePrenom}
+          handleChangeNom={this.handleChangeNom}
+          handleChangeEmail={this.handleChangeEmail}
+          handleChangeTelephone={this.handleChangeTelephone}
         />
       </div>
     );
@@ -112,7 +148,7 @@ class JemmaCode extends React.Component {
 class Form extends React.Component {
   render() {
     return (
-      <form onSubmit={this.props.ajoutPersonne}>
+      <form onSubmit={this.props.modification ===false ? this.props.ajoutPersonne : this.props.enEdition}>
         <div className="container ">
           <div className="row w-75  mx-auto my-5">
             <div className="col-lg-6 my-3">
@@ -156,9 +192,15 @@ class Form extends React.Component {
               />
             </div>
             <div className="">
-              <button type="submit" className="btn btn-success col-12 my-3">
-                Ajouter
-              </button>
+              {this.props.modification === false ? (
+                <button type="submit" className="btn btn-success col-12 my-3">
+                  Ajouter
+                </button>
+              ) : (
+                <button type="submit" className="btn btn-warning col-12 my-3">
+                  Modifier
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -201,26 +243,48 @@ class Tbody extends React.Component {
   render() {
     return this.props.userList.map((user) => (
       <tr key={user.id}>
-        <td>{user.modification ? (<input type="text" defaultValue={user.prenom} onChange={this.props.handleChangePrenom}/>) : (user.prenom)}</td>
+        <td>
+          {this.props.modification === false ? (
+            <input
+              type="text"
+              defaultValue={user.prenom}
+              onChange={this.props.handleChangePrenom}
+            />
+          ) : (
+            user.prenom
+          )}
+        </td>
         <td>
           {user.modification ? (
-            <input type="text" defaultValue={user.nom} onChange={this.props.handleChangeNom}/>
+            <input
+              type="text"
+              defaultValue={user.nom}
+              onChange={this.props.handleChangeNom}
+            />
           ) : (
             user.nom
           )}
         </td>
         <td>
           {user.modification ? (
-            <input type="email" defaultValue={user.email} onChange={this.props.handleChangeEmail}/>
+            <input
+              type="email"
+              defaultValue={user.email}
+              onChange={this.props.handleChangeEmail}
+            />
           ) : (
             user.email
           )}
         </td>
         <td>
           {user.modification ? (
-            <input type="text" defaultValue={user.telephone} onChange={this.props.handleChangeTelephone}/>
+            <input
+              type="text"
+              defaultValue={user.telephone}
+              onChange={this.props.handleChangeTelephone}
+            />
           ) : (
-            user.telephone
+            user.tel
           )}
         </td>
         <td>
@@ -228,11 +292,7 @@ class Tbody extends React.Component {
             onClick={() => this.props.editUser(user.id)}
             className="btn btn-warning mx-1"
           >
-            {user.modification ? (
-              <i className="fa-solid fa-check"></i>
-            ) : (
-              <i className="fa-solid fa-pen-to-square"></i>
-            )}
+            <i className="fa-solid fa-pen-to-square"></i>
           </button>
           <button
             onClick={() => this.props.deleteUser(user.id)}
@@ -246,14 +306,10 @@ class Tbody extends React.Component {
   }
 }
 
-class Input extends React.Component{
-  render(){
-    return(
-      <input type="text" className="form-control"/>
-    )
+class Input extends React.Component {
+  render() {
+    return <input type="text" className="form-control" />;
   }
 }
-
-
 
 ReactDOM.render(<JemmaCode />, document.getElementById("root"));
