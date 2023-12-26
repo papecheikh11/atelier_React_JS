@@ -50,7 +50,6 @@ class JemmaCode extends React.Component {
 
   enEdition(e){
     e.preventDefault()
-    if (this.state.modification !== false) {
     const enEdition = this.state.userList.map((user)=> user.id === this.state.modification ? {id:user.id, nom:this.state.nom, prenom:this.state.prenom, tel:this.state.tel, email:this.state.email} : user)
     this.setState({
       userList:enEdition,
@@ -61,9 +60,7 @@ class JemmaCode extends React.Component {
       modification:false
     })
       
-    } else {
       
-    }
   }
 
   ajoutPersonne(e) {
