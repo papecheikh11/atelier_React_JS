@@ -1,13 +1,14 @@
 // import React, {useState, useEffect} from 'react'
 import React from 'react'
 import Input from "./Input";
+import Button from './Button';
 
-const Form = ({ handleChange, handleSubmit, editClick, prenom, nom, telephone, email, name}) => {
+const Form = ({ handleChange, handleSubmit, prenom, nom, telephone, email, editClick, editIndex}) => {
    
 
   return (
     <div>
-        <h3 className='m-3' >Jemma Coder  Hooks</h3>
+        <h3 className='m-3 text-center' >Jemma Coder  Hooks</h3>
      <form onSubmit={handleSubmit}>
         <div className="container ">
           <div className="row w-75  mx-auto my-5">
@@ -16,9 +17,7 @@ const Form = ({ handleChange, handleSubmit, editClick, prenom, nom, telephone, e
             <Input content='Email' type='text' value={email} onChange={handleChange} name='email' />
             <Input content='Telephone' type='text' value={telephone} onChange={handleChange} name='telephone' />
             <div className="">
-                  <button type="submit" className={editClick ? ("btn btn-warning col-12 my-3") : ("btn btn-success col-12 my-3")}>
-                 { editClick ? 'Modifier' : 'Ajouter'}
-                </button>
+                <Button editClick={editClick} editIndex={editIndex}/>
             </div>
           </div>
         </div>

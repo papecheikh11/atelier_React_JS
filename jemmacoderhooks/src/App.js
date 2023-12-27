@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import Form from "./pages/Form";
 import Table from "./pages/Table";
 
@@ -43,12 +42,10 @@ function App() {
       } else {
         setTableData([...tableData, inputs]);
         setInputs({ prenom: "", nom: "", email: "", telephone: "" });
-        setEditClick(true);
 
+        localStorage.setItem( "userData", JSON.stringify([...tableData, inputs]));
       }
     }
-    localStorage.setItem("userData", JSON.stringify([...tableData, inputs]));
-    console.log(editClick);
   };
 
   const handleEdit = (index) => {
@@ -61,7 +58,6 @@ function App() {
     });
     setEditClick(true);
     SetEditIndex(index);
-    console.log(editClick);
   };
 
   const handleDelete = (index) => {
@@ -72,18 +68,22 @@ function App() {
   return (
     <div className="App">
       <Form
-    
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         prenom={inputs.prenom}
         nom={inputs.nom}
         email={inputs.email}
         telephone={inputs.telephone}
+        editClick={editClick}
+        editIndex={editIndex}
       />
       <Table
         handleDelete={handleDelete}
         handleEdit={handleEdit}
         tableData={tableData}
+        editClick={editClick}
+        editIndex={editIndex}
+        handleSubmit={handleSubmit}
       />
     </div>
   );

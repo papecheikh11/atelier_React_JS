@@ -5,7 +5,7 @@ const Tbody = ({tableData, handleEdit, handleDelete }) => {
     <tbody>
           {
             tableData.map((item, i)=>(
-                <tr>
+                <tr key={i}>
                     <td>{item.prenom}</td>
                     <td>{item.nom}</td>
                     <td>{item.email}</td>
