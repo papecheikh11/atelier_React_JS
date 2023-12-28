@@ -9,7 +9,7 @@ const Form = ({ handleChange, handleSubmit, prenom, nom, telephone, email, editC
   return (
     <div>
         <h3 className='m-3 text-center' >Jemma Coder  Hooks</h3>
-     <form onSubmit={handleSubmit}>
+     <form onSubmit={handleSubmit} className='form-control w-75 mx-auto'>
         <div className="container ">
           <div className="row w-75  mx-auto my-5">
             <Input content='Prenom' type='text' value={prenom} onChange={handleChange} name='prenom'/>
