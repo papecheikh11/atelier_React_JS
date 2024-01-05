@@ -1,0 +1,49 @@
+body{
+    background-color: rgb(67, 64, 64);
+  }
+  .my_h6{
+    color: rgb(135, 148, 162);
+  }
+  
+  textarea{
+    font-size: 20px;
+    width: 700px;
+    padding-left: 15px;
+    padding-top: 15px;
+    height: 600px;
+    background-color: rgb(135, 148, 162);
+    border-radius: 20px;
+  }
+  
+  .afficher{
+   
+    padding: 15px 10px 10px 10px;
+    font-size: 15px;
+    text-align: center;
+    width: 260px;
+    height: 280px;
+    border-radius: 20px;
+    background-color: rgb(252, 253, 255);
+  }
+  
+  .btn, .btn:hover{
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+   background-color: rgb(50, 82, 82);
+  }
+
+  @media(max-width: 768px)  {
+    textarea{
+       margin-inline: auto;
+
+        width: 450px;
+      }
+
+      .afficher{
+       margin-inline: auto;
+        width: 50%;
+      }
+      
+  }
+  
