@@ -36,7 +36,6 @@ body{
   @media(max-width: 768px)  {
     textarea{
        margin-inline: auto;
-
         width: 450px;
       }
 
