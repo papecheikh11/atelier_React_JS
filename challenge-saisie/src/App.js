@@ -16,7 +16,7 @@ function App() {
           <EspaceText value={value} setValue={setValue} />
           <Affichage value={value} setValue={setValue}/>
         </div>
-        <Button value={value} />
+        <Button value={value}/>
       </div>
     </div>
   );
