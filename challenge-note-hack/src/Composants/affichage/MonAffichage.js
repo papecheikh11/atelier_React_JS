@@ -1,33 +1,32 @@
 import React from "react";
 
-const MonAffichage = ({ tache, deleteTask, editTask, isEditing }) => {
+const MonAffichage = ({ tache, deleteTask, editTask, isEditing, deleteAll }) => {
   return (
     <div className="container bg-white">
       <div className="container mon-affichage mx-auto my-5">
         <h5>
           Notes <span>0</span>
         </h5>
-        <Clear />
+        <Clear deleteAll={deleteAll}/>
       </div>
       <hr />
-      <div className=" ">
-        <div className="">
+      <div >
           <Liste
             tache={tache}
             deleteTask={deleteTask}
             editTask={editTask}
             isEditing={isEditing}
+            deleteAll={deleteAll}
           />
-        </div>
       </div>
     </div>
   );
 };
 
-const Clear = () => {
+const Clear = ({deleteAll}) => {
   return (
     <div>
-      <button className="btn btn-primary">Clear All</button>
+      <button className="btn btn-primary" onClick={deleteAll} >Clear All</button>
     </div>
   );
 };
@@ -64,7 +63,7 @@ const Card = ({ tache, deleteTask, editTask, isEditing }) => {
           tache={tache}
           className="border-btn"
           icon={<i className="fa-solid fa-pen mx-1 "></i>}
-          onClick={() => editTask(myTask)}
+          onClick={() => editTask(myTask) }
         />
       </div>
     </div>

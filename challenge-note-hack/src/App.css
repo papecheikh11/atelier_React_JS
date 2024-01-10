@@ -1,7 +1,8 @@
 .App{
     margin-top: 20px;
-    background-color: rgb(106, 189, 238);
+    /* background: linear-gradient(to right, rgb(136, 136, 235), rgb(46, 43, 224)); */
     padding: 10px;
+    min-height: 700px;
 }
 .my-header{
     display: flex;

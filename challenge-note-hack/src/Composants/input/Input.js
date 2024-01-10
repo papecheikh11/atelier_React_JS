@@ -1,12 +1,12 @@
 import React from "react";
 
-const Input = ({handleChange, inputValue, setInputValue, addTask, setTache, editTask,tache}) => {
+const Input = ({handleChange, inputValue, setInputValue, handleSubmit, isEditing, editTask,tache}) => {
   
 
   
 
   return (
-    <div className="container mon-input mx-auto my-5">
+    <form className="container mon-input mx-auto my-5" onSubmit={handleSubmit}>
       <input
         className="form-control"
         placeholder="Add note"
@@ -14,24 +14,25 @@ const Input = ({handleChange, inputValue, setInputValue, addTask, setTache, edit
         value={inputValue}
       />
       <Btn
-        addTask={addTask}
+        handleSubmit={handleSubmit}
         inputValue={inputValue}
         setInputValue={setInputValue}
         editTask={editTask}
         tache={tache}
+        isEditing={isEditing}
       />
-    </div>
+    </form>
   );
 };
 
-const Btn = ({ addTask, editTask, isEditing }) => {
+const Btn = ({ handleSubmit, editTask, isEditing }) => {
 
   
 
   return (
     <div>
-      <button className="btn btn-success mx-1" onClick={addTask}>
-       Add
+      <button className="btn btn-success mx-1">
+      {!isEditing ? 'Add' : 'Update'}
       </button>
     </div>
   );
