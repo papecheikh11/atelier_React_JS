@@ -1,14 +1,19 @@
+
 import "./App.css";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 
+const AppContext = createContext();
 
-function App() {
+const AppProvider = ({ children }) => {
   const [inputValue, setInputValue] = useState("");
-  const [tache, setTache] = useState(JSON.parse(localStorage.getItem('tache')) || [])
+  const [tache, setTache] = useState(
+    JSON.parse(localStorage.getItem("tache")) || []
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState("");
-  const [backgroundColor, setBackgroundColor] = useState(JSON.parse(localStorage.getItem('backgroundColor')) || "")
+  const [backgroundColor, setBackgroundColor] = useState(
+    JSON.parse(localStorage.getItem("backgroundColor")) || ""
+  );
   let iteration = tache.length;
   const handleColorButtonClick = (newColor) => {
     setBackgroundColor(newColor);
@@ -57,7 +62,6 @@ function App() {
       console.error("Task not found");
     }
   };
-  
 
   const deleteAll = () => {
     setTache([]);
@@ -69,9 +73,36 @@ function App() {
   };
 
   useEffect(() => {
-    localStorage.setItem('tache', JSON.stringify(tache))
-    localStorage.setItem('backgroundColor', JSON.stringify(backgroundColor))
-  }, [tache, backgroundColor])
+    localStorage.setItem("tache", JSON.stringify(tache));
+    localStorage.setItem("backgroundColor", JSON.stringify(backgroundColor));
+  }, [tache, backgroundColor]);
+
+  const contextValue = {
+    inputValue,
+    setInputValue,
+    tache,
+    setTache,
+    isEditing,
+    setIsEditing,
+    editIndex,
+    setEditIndex,
+    backgroundColor,
+    setBackgroundColor,
+    iteration,
+    handleColorButtonClick,
+    handleChange,
+    handleSubmit,
+    editTask,
+    deleteAll,
+    deleteTask,
+  };
+  return (
+    <AppContext.Provider value={contextValue}> {children} </AppContext.Provider>
+  );
+};
+const useAppContext = () => useContext(AppContext);
+function App() {
+  const {inputValue, setInputValue, tache, setTache, backgroundColor, iteration,handleColorButtonClick, handleChange, deleteTask} = useAppContext();
 
   return (
     <div
@@ -84,60 +115,97 @@ function App() {
       <div>
         <Input
           handleChange={handleChange}
-          tache={tache}
+          tache={tache}cd note
           setTache={setTache}
-          handleSubmit={handleSubmit}
-          editTask={editTask}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          isEditing={isEditing}
         />
       </div>
       <div>
         <MonAffichage
           iteration={iteration}
           tache={tache}
-          handleSubmit={handleSubmit}
           deleteTask={deleteTask}
-          editTask={editTask}
-          isEditing={isEditing}
-          deleteAll={deleteAll}
         />
       </div>
     </div>
   );
 }
 
-const Input = ({handleChange, inputValue, setInputValue, handleSubmit, isEditing, editTask,tache}) => {
-  
+const MonAffichage = () => {
+  const { iteration, tache, deleteTask, editTask, deleteAll } = useAppContext();
   return (
-    <form className="container mon-input mx-auto my-5" onSubmit={handleSubmit}>
-      <input
-        className="form-control"
-        placeholder="Add note"
-        onChange={handleChange}
-        value={inputValue}
-      />
-      <Btn
-        handleSubmit={handleSubmit}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        editTask={editTask}
-        tache={tache}
-        isEditing={isEditing}
-      />
-    </form>
+    <div className="container bg-white">
+      <div className=" mon-affichage mx-auto my-5 row">
+        <div className="col-12 col-md-6 d-flex">
+          <h5> Notes </h5>
+          <div className="ms-2 iter text-center text-dark">{iteration}</div>
+        </div>
+        <div className="col-12 col-md-6 text-end">
+          <Clear deleteAll={deleteAll} />
+        </div>
+      </div>
+      <hr />
+      <div>
+        <Liste tache={tache} deleteTask={deleteTask} editTask={editTask} />
+      </div>
+    </div>
   );
 };
 
-const Btn = ({ isEditing }) => {
-
-  
-
+const Clear = ({ deleteAll }) => {
   return (
     <div>
-      <button className="btn btn-success mx-1">
-      {!isEditing ? 'Add' : 'Update'}
+      <button className="btn btn-primary" onClick={deleteAll}>
+        Clear All
+      </button>
+    </div>
+  );
+};
+
+const Liste = ({ tache, deleteTask, editTask }) => {
+  return (
+    <div className="container d-flex contenant">
+      <Card
+        tache={tache}
+        deleteTask={deleteTask}
+        editTask={editTask}
+      />
+    </div>
+  );
+};
+
+const Card = ({ tache, deleteTask, editTask, isEditing }) => {
+  // console.log(isEditing);
+  return tache.map((myTask) => (
+    <div key={myTask.id} className="contenue">
+      <div>
+        <h6>{myTask.value}</h6>
+        <p>{myTask.timestamp}</p>
+      </div>
+      <div>
+        <SuppMod
+          className="border-btn"
+          icon={<i className="fa-solid fa-trash mx-1 "></i>}
+          onClick={() => deleteTask(myTask.id)}
+        />
+        <SuppMod
+          isEditing={isEditing}
+          tache={tache}
+          className="border-btn"
+          icon={<i className="fa-solid fa-pen mx-1 "></i>}
+          onClick={() => editTask(myTask.id)}
+        />
+      </div>
+    </div>
+  ));
+};
+
+const SuppMod = ({ onClick, className, icon }) => {
+  return (
+    <div>
+      <button onClick={onClick} className={className}>
+        {icon}
       </button>
     </div>
   );
@@ -202,105 +270,46 @@ const Header = ({ onColorButtonClick }) => {
   );
 };
 
-const Bouttons = ({ className,onClick }) => {
+const Bouttons = ({ className, onClick }) => {
   return (
     <div>
       <button className={className} onClick={onClick}></button>
     </div>
   );
 };
-const MonAffichage = ({
-  tache,
-  deleteTask,
-  editTask,
-  isEditing,
-  deleteAll,
-  iteration,
-}) => {
-  return (
-    <div className="container bg-white">
-        <div className=" mon-affichage mx-auto my-5 row">
-          <div className="col-12 col-md-6 d-flex">
-            <h5> Notes </h5>
-            <div className="ms-2 iter text-center text-dark">{iteration}</div>
-          </div>
-          <div className="col-12 col-md-6 text-end">
-            <Clear deleteAll={deleteAll} />
-          </div>
-        </div>
-      <hr />
-      <div>
-        <Liste
-          tache={tache}
-          deleteTask={deleteTask}
-          editTask={editTask}
-          isEditing={isEditing}
-          deleteAll={deleteAll}
-        />
-      </div>
-    </div>
-  );
-};
 
-const Clear = ({ deleteAll }) => {
-  return (
-    <div>
-      <button className="btn btn-primary" onClick={deleteAll}>
-        Clear All
-      </button>
-    </div>
-  );
-};
+const Input = () => {
+  const { handleChange, inputValue, handleSubmit } = useAppContext();
 
-const Liste = ({ tache, deleteTask, editTask, isEditing }) => {
   return (
-    <div className="container d-flex contenant">
-      <Card
-        tache={tache}
-        deleteTask={deleteTask}
-        editTask={editTask}
-        isEditing={isEditing}
+    <form className="container mon-input mx-auto my-5" onSubmit={handleSubmit}>
+      <input
+        className="form-control"
+        placeholder="Add note"
+        onChange={handleChange}
+        value={inputValue}
       />
-    </div>
+      <Btn />
+    </form>
   );
 };
 
-const Card = ({ tache, deleteTask, editTask, isEditing }) => {
-  // console.log(isEditing);
-  return tache.map((myTask) => (
-    <div key={myTask.id} className="contenue">
-      <div>
-        <h6>{myTask.value}</h6>
-        <p>{myTask.timestamp}</p>
-      </div>
-      <div>
-        <SuppMod
-          className="border-btn"
-          icon={<i className="fa-solid fa-trash mx-1 "></i>}
-          onClick={() => deleteTask(myTask.id)}
-        />
-        <SuppMod
-          isEditing={isEditing}
-          tache={tache}
-          className="border-btn"
-          icon={<i className="fa-solid fa-pen mx-1 "></i>}
-          onClick={() => editTask(myTask.id)}
-        />
-      </div>
-    </div>
-  ));
-};
+const Btn = () => {
+  const { isEditing } = useAppContext();
 
-const SuppMod = ({ onClick, className, icon }) => {
   return (
     <div>
-      <button onClick={onClick} className={className}>
-        {icon}
+      <button className="btn btn-success mx-1">
+        {!isEditing ? "Add" : "Update"}
       </button>
     </div>
   );
-}
+};
 
+const MainApp = () => (
+  <AppProvider>
+    <App />
+  </AppProvider>
+);
 
-
-export default App;
+export default <MainApp />;

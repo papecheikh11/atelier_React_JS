@@ -1,28 +1,27 @@
-import {
-  Route,
-  Routes,
-} from "react-router-dom";
-import "./App.css";
-import Countries from "./components/Countries";
-import CountryDetails from "./components/CountryDetails";
+import Header from "./components/header/Header";
+import useTheme from "./hooks/useTheme";
+import Home from "./pages/Home";
+import { Routes, Route } from "react-router-dom";
+import DetailsCountries from "./pages/DetailsCountries";
+import CountryProvider from "./contextes/CountryProvider";
 
 function App() {
+  const { theme } = useTheme();
   return (
-    <>
-      <header className="header-container">
-        <div className="header-content">
-            <h2 className="title">Where in the world</h2>
-            <p className="theme-changer"><i className="fa-regular fa-moon"></i>&nbsp; &nbsp; Dark Mode</p>
-        </div>
-    </header>
+    <div className={`${theme} App`}>
+      <Header />
       <Routes>
-        <Route path="/" element={<Countries />}></Route>
+        <Route path="/" element={<Home />}></Route>
         <Route
-          path="/country/:countryName"
-          element={<CountryDetails />}
+          path="/country/:id"
+          element={
+            <CountryProvider>
+              <DetailsCountries />
+            </CountryProvider>
+          }
         ></Route>
       </Routes>
-    </>
+    </div>
   );
 }
 
